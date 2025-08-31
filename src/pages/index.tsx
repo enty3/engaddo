@@ -1,16 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Phone, Mail, MapPin, Clock, Star, Users, Award, Shield, Target, Globe } from 'lucide-react';
+import { Menu, X, Phone, Mail, Globe } from 'lucide-react';
+import Image from 'next/image';
 
 // Komponenta pro animované číslo
-const AnimatedNumber = ({ target, suffix = '', duration = 2000, startAnimation }) => {
-    const [current, setCurrent] = useState(0);
-    const startTime = useRef(null);
-    const animationRef = useRef(null);
+interface AnimatedNumberProps {
+    target: number;
+    suffix?: string;
+    duration?: number;
+    startAnimation: boolean;
+}
+
+const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ target, suffix = '', duration = 2000, startAnimation }) => {
+    const [current, setCurrent] = useState<number>(0);
+    const startTime = useRef<number | null>(null);
+    const animationRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (!startAnimation) return;
 
-        const animate = (timestamp) => {
+        const animate = (timestamp: number): void => {
             if (!startTime.current) startTime.current = timestamp;
 
             const elapsed = timestamp - startTime.current;
@@ -45,10 +53,10 @@ const AnimatedNumber = ({ target, suffix = '', duration = 2000, startAnimation }
 };
 
 // Hook pro detekci visibility
-const useIntersectionObserver = (options = {}) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [hasBeenVisible, setHasBeenVisible] = useState(false);
-    const elementRef = useRef(null);
+const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [hasBeenVisible, setHasBeenVisible] = useState<boolean>(false);
+    const elementRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
@@ -73,16 +81,17 @@ const useIntersectionObserver = (options = {}) => {
         };
     }, [hasBeenVisible, options]);
 
-    return [elementRef, isVisible];
+    return [elementRef, isVisible] as const;
 };
 
 // Jazykové konstanty
 const translations = {
     cs: {
         nav: {
-            pobytove: 'POBYTOVÉ ZÁJEZDY',
-            individualni: 'INDIVIDUÁLNÍ ZÁJEZDY',
-            program: 'ZÁJEZDY S PROGRAMEM',
+            pobytove: 'KVĚTINOVÁ CESTA A SAFARI',
+            individualni: 'MOŘE A SAFARI',
+            program: 'KAPSKÉ MĚSTO A OKOLÍ',
+            faq: 'ČASTÉ OTÁZKY',
             kontakt: 'KONTAKT'
         },
         hero: {
@@ -102,22 +111,60 @@ const translations = {
             subtitle: 'Připravili jsme pro vás výběr nejlepších míst v Jihoafrické republice. Každý zájezd lze přizpůsobit vašim požadavkům.',
             learnMore: 'Zjistit více',
             pobytove: {
-                title: 'Pobytové zájezdy',
+                title: 'Květinová cesta a safari',
                 description: 'Zajistíme pro Vás v Jihoafrické republice exkluzivní pobyty na farmách v blízkosti měst Kimberley nebo Port Elizabeth s autentickou atmosférou africké přírody, v resortu Marina Sands s rekreačními domky na břehu Indického oceánu, nebo v luxusních apartmánech v Kapském městě s výhledem na oceán.',
                 price: 'Od 65 000 Kč',
                 duration: '7 dní / 6 nocí'
             },
             program: {
-                title: 'Zájezdy s programem',
+                title: 'Kapské město a okolí',
                 description: 'Připravili jsme pro Vás pestrý 14denní zájezd kombinující nejkrásnější město JAR Cape Town s jeho pravou atmosférou přístavního města, autentické safari v národních parcích i na soukromých farmách Fijnbosch a Mayabana, plus relaxaci na břehu Indického oceánu pro dokonalé africké dobrodružství.',
                 price: 'Od 55 000 Kč',
                 duration: '6 dní / 5 nocí'
             },
             individualni: {
-                title: 'Individuální zájezdy',
+                title: 'Moře a safari',
                 description: 'Rádi vám dále sestavíme individuální zájezd podle vašich přání – od pracovních teambuildinových cest s konferenčním servisem a svateb včetně hostiny, přes forfaitové a golfové zájezdy, až po surfařské zájezdy s možností výuky, cesty za vínem a vinařstvím nebo safari dle vašich představ.',
                 price: 'Od 48 000 Kč',
                 duration: '8 dní / 7 nocí'
+            }
+        },
+        faq: {
+            title: 'Často kladené otázky',
+            subtitle: 'Odpovědi na nejčastější dotazy ohledně našich zájezdů do Jihoafrické republiky',
+            questions: {
+                letenky: {
+                    question: 'Jak to funguje s letenkami?',
+                    answer: 'Letenky zajišťujeme podle vašich preferencí. Spolupracujeme s renomovanými aerolinkami a vždy hledáme nejlepší spojení za rozumnou cenu. Letenky je možné zařídit jak přímo přes nás, tak si je můžete obstarat samostatně. Doporučujeme rezervaci s dostatečným předstihem pro lepší ceny.'
+                },
+                pojisteni: {
+                    question: 'Je nutné cestovní pojištění?',
+                    answer: 'Cestovní pojištění je naprosto nezbytné a je podmínkou účasti na zájezdu. Musí pokrývat minimálně zdravotní péči do výše 2 miliony Kč, úrazové pojištění a odpovědnost za škodu. Doporučujeme také pojištění zavazadel a storna zájezdu. Můžeme vám doporučit vhodné pojistné produkty.'
+                },
+                ockovani: {
+                    question: 'Jsou nutná nějaká očkování?',
+                    answer: 'Pro Jihoafrickou republiku nejsou povinná žádná speciální očkování. Doporučujeme však konzultaci s lékařem nebo cestovní klinikou nejpozději 6 týdnů před odjezdem. V případě návštěvy národních parků v malarické oblasti doporučujeme profylaxi proti malárii.'
+                },
+                bezpecnost: {
+                    question: 'Je Jihoafrická republika bezpečná?',
+                    answer: 'Při dodržování základních bezpečnostních pravidel a cestování s námi je JAR bezpečnou destinací. Všechny naše programy jsou navrženy s ohledem na bezpečnost. Poskytujeme podrobné informace o bezpečnostním chování a naši průvodci znají místní podmínky. Vyhýbáme se rizikovým oblastem a aktivitám.'
+                },
+                ubytovani: {
+                    question: 'Jaké je ubytování během zájezdu?',
+                    answer: 'Ubytování vybíráme pečlivě podle kategorie zájezdu. Nabízíme od luxusních lodge až po útulné farmy s autentickou atmosférou. Všechna ubytování mají standardní vybavení, často s bazénem a dalšími službami. V případě potřeby můžeme zajistit jednotlivé pokoje za příplatek.'
+                },
+                narocnost: {
+                    question: 'Jaká je náročnost zájezdů a věková kategorie?',
+                    answer: 'Naše zájezdy jsou vhodné pro všechny věkové kategorie od 5 let. Fyzická náročnost je mírná - zahrnuje chůzi v terénu během safari a výletů. Pro seniory a osoby s omezenou pohyblivostí můžeme program přizpůsobit. Doporučujeme základní fyzickou kondici pro plné využití všech aktivit.'
+                },
+                kdo: {
+                    question: 'Kdo s vámi pojede a kdo vás bude provázet?',
+                    answer: 'Skupiny cestují s českým průvodcem, který má více než 10 let zkušeností s Jižní Afrikou a hovoří anglicky i místními jazyky. V destinaci vás doprovodí také místní průvodci s bohatými znalostmi přírody a kultury. Skupiny jsou obvykle 8-16 osob, což zaručuje osobní přístup.'
+                },
+                viza: {
+                    question: 'Potřebuji vízum do Jihoafrické republiky?',
+                    answer: 'Občané ČR nepotřebují pro turistické pobyty do 90 dnů vízum. Stačí platný pas s platností minimálně 30 dnů po skončení pobytu a alespoň 2 volnými stránkami pro razítka. Při vstupu dostanete turistické razítko. Doporučujeme mít s sebou potvrzení o zpáteční letenče a ubytování.'
+                }
             }
         },
         contact: {
@@ -146,9 +193,10 @@ const translations = {
     },
     en: {
         nav: {
-            pobytove: 'ACCOMMODATION TOURS',
-            individualni: 'INDIVIDUAL TOURS',
-            program: 'PROGRAM TOURS',
+            pobytove: 'FLOWER ROUTE & SAFARI',
+            individualni: 'SEA & SAFARI',
+            program: 'CAPE TOWN & SURROUNDINGS',
+            faq: 'FAQ',
             kontakt: 'CONTACT'
         },
         hero: {
@@ -168,22 +216,60 @@ const translations = {
             subtitle: 'We have prepared a selection of the best places in South Africa for you. Each tour can be customized to your requirements.',
             learnMore: 'Learn More',
             pobytove: {
-                title: 'Accommodation Tours',
+                title: 'Flower Route & Safari',
                 description: 'We will arrange exclusive stays on farms near Kimberley or Port Elizabeth with authentic African nature atmosphere.',
                 price: 'From 65,000 CZK',
                 duration: '7 days / 6 nights'
             },
             program: {
-                title: 'Program Tours',
+                title: 'Cape Town & Surroundings',
                 description: 'We have prepared a varied 14-day tour combining the most beautiful city of SA, Cape Town, with its true port city atmosphere.',
                 price: 'From 55,000 CZK',
                 duration: '6 days / 5 nights'
             },
             individualni: {
-                title: 'Individual Tours',
+                title: 'Sea & Safari',
                 description: 'We will gladly create an individual tour according to your wishes - from corporate team building trips to surfing tours.',
                 price: 'From 48,000 CZK',
                 duration: '8 days / 7 nights'
+            }
+        },
+        faq: {
+            title: 'Frequently Asked Questions',
+            subtitle: 'Answers to the most common questions about our tours to South Africa',
+            questions: {
+                letenky: {
+                    question: 'How do flight tickets work?',
+                    answer: 'We arrange flight tickets according to your preferences. We work with reputable airlines and always look for the best connections at reasonable prices. Tickets can be arranged directly through us or you can arrange them yourself. We recommend booking well in advance for better prices.'
+                },
+                pojisteni: {
+                    question: 'Is travel insurance necessary?',
+                    answer: 'Travel insurance is absolutely essential and is a condition for participating in the tour. It must cover at least medical care up to 2 million CZK, accident insurance and liability for damage. We also recommend luggage insurance and tour cancellation insurance. We can recommend suitable insurance products.'
+                },
+                ockovani: {
+                    question: 'Are any vaccinations required?',
+                    answer: 'No special vaccinations are required for South Africa. However, we recommend consultation with a doctor or travel clinic at least 6 weeks before departure. If visiting national parks in malaria areas, we recommend malaria prophylaxis.'
+                },
+                bezpecnost: {
+                    question: 'Is South Africa safe?',
+                    answer: 'When following basic safety rules and traveling with us, SA is a safe destination. All our programs are designed with safety in mind. We provide detailed information about safety behavior and our guides know local conditions. We avoid risky areas and activities.'
+                },
+                ubytovani: {
+                    question: 'What is the accommodation like during the tour?',
+                    answer: 'We carefully select accommodation according to the tour category. We offer everything from luxury lodges to cozy farms with authentic atmosphere. All accommodations have standard facilities, often with pools and other services. We can arrange single rooms for an additional fee if needed.'
+                },
+                narocnost: {
+                    question: 'What is the difficulty level and age category?',
+                    answer: 'Our tours are suitable for all age categories from 5 years old. Physical difficulty is mild - includes walking in terrain during safaris and excursions. For seniors and people with limited mobility, we can adapt the program. We recommend basic physical fitness for full enjoyment of all activities.'
+                },
+                kdo: {
+                    question: 'Who will travel with you and who will guide you?',
+                    answer: 'Groups travel with a Czech guide who has more than 10 years of experience with South Africa and speaks English and local languages. In the destination, you will also be accompanied by local guides with rich knowledge of nature and culture. Groups are usually 8-16 people, ensuring personal approach.'
+                },
+                viza: {
+                    question: 'Do I need a visa for South Africa?',
+                    answer: 'Czech citizens do not need a visa for tourist stays up to 90 days. A valid passport with validity of at least 30 days after the end of stay and at least 2 blank pages for stamps is sufficient. You will receive a tourist stamp upon entry. We recommend having confirmation of return ticket and accommodation.'
+                }
             }
         },
         contact: {
@@ -210,7 +296,7 @@ const translations = {
             copyright: '© 2024 AddoTours. All rights reserved.'
         }
     }
-};
+} as const;
 
 interface Destination {
     id: string;
@@ -235,11 +321,25 @@ interface FormData {
     gdprConsent: boolean;
 }
 
+interface NavItem {
+    id: string;
+    label: string;
+    section: string;
+}
+
+interface Stat {
+    number: number;
+    suffix: string;
+    label: string;
+}
+
+type DateType = 'from' | 'to' | '';
+
 const AddoTours: React.FC = () => {
     const [language, setLanguage] = useState<'cs' | 'en'>('cs');
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+    const [expandedFAQ, setExpandedFAQ] = useState<string>('');
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
@@ -253,9 +353,9 @@ const AddoTours: React.FC = () => {
     });
 
     // Kalendář state
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [selectedDateType, setSelectedDateType] = useState(''); // 'from' nebo 'to'
+    const [showCalendar, setShowCalendar] = useState<boolean>(false);
+    const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+    const [selectedDateType, setSelectedDateType] = useState<DateType>(''); // 'from' nebo 'to'
 
     // Hook pro animované statistiky
     const [statsRef, isStatsVisible] = useIntersectionObserver();
@@ -271,20 +371,6 @@ const AddoTours: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const backgroundImages = [
-        'backgroundmain.jpg',
-        'backgroundmain2.jpg',
-        'backgroundmain3.jpg',
-        'backgroundmain4.jpg'
-    ];
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [backgroundImages.length]);
-
     const scrollToSection = (sectionId: string): void => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -294,12 +380,12 @@ const AddoTours: React.FC = () => {
     };
 
     const handleNavigation = (section: string): void => {
-        if (section === 'contact') {
-            scrollToSection('contact');
+        if (section === 'faq') {
+            scrollToSection(section);
         } else {
             switch (section) {
-                case 'pobytove-zajezdy':
-                    window.location.href = '/pobytove-zajezdy';
+                case 'kvetinova-cesta':
+                    window.location.href = '/kvetinova-cesta';
                     break;
                 case 'individualni-zajezdy':
                     window.location.href = '/individualni-zajezdy';
@@ -307,11 +393,18 @@ const AddoTours: React.FC = () => {
                 case 'zajezdy-s-programem':
                     window.location.href = '/zajezdy-s-programem';
                     break;
+                case 'contact':
+                    window.location.href = '/kontakt';
+                    break;
                 default:
                     scrollToSection(section);
             }
         }
         setIsMenuOpen(false);
+    };
+
+    const toggleFAQ = (questionKey: string): void => {
+        setExpandedFAQ(expandedFAQ === questionKey ? '' : questionKey);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
@@ -325,20 +418,20 @@ const AddoTours: React.FC = () => {
     };
 
     // Kalendářové funkce
-    const getDaysInMonth = (date) => {
+    const getDaysInMonth = (date: Date): number => {
         return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     };
 
-    const getFirstDayOfMonth = (date) => {
+    const getFirstDayOfMonth = (date: Date): number => {
         const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
         return firstDay === 0 ? 6 : firstDay - 1; // Pondělí = 0
     };
 
-    const formatDate = (date) => {
+    const formatDate = (date: Date): string => {
         return date.toISOString().split('T')[0];
     };
 
-    const handleDateSelect = (day) => {
+    const handleDateSelect = (day: number): void => {
         const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
         const formattedDate = formatDate(selectedDate);
 
@@ -357,12 +450,12 @@ const AddoTours: React.FC = () => {
         setShowCalendar(false);
     };
 
-    const openCalendar = (dateType) => {
+    const openCalendar = (dateType: DateType): void => {
         setSelectedDateType(dateType);
         setShowCalendar(true);
     };
 
-    const navigateMonth = (direction) => {
+    const navigateMonth = (direction: number): void => {
         setCurrentMonth(prev => {
             const newMonth = new Date(prev);
             newMonth.setMonth(prev.getMonth() + direction);
@@ -370,10 +463,10 @@ const AddoTours: React.FC = () => {
         });
     };
 
-    const renderCalendar = () => {
+    const renderCalendar = (): React.ReactElement[] => {
         const daysInMonth = getDaysInMonth(currentMonth);
         const firstDay = getFirstDayOfMonth(currentMonth);
-        const days = [];
+        const days: React.ReactElement[] = [];
 
         // Prázdné buňky pro dny před začátkem měsíce
         for (let i = 0; i < firstDay; i++) {
@@ -400,18 +493,28 @@ const AddoTours: React.FC = () => {
         return days;
     };
 
-    const monthNames = [
-        'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
-        'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
-    ];
+    const monthNames = {
+        cs: [
+            'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+            'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
+        ],
+        en: [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+    };
 
-    const dayNames = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
+    const dayNames = {
+        cs: ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'],
+        en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+    };
 
-    const navItems = [
-        { id: '1', label: t.nav.pobytove, section: 'pobytove-zajezdy' },
+    const navItems: NavItem[] = [
+        { id: '1', label: t.nav.pobytove, section: 'kvetinova-cesta' },
         { id: '2', label: t.nav.individualni, section: 'individualni-zajezdy' },
         { id: '3', label: t.nav.program, section: 'zajezdy-s-programem' },
-        { id: '4', label: t.nav.kontakt, section: 'contact' }
+        { id: '4', label: t.nav.faq, section: 'faq' },
+        { id: '5', label: t.nav.kontakt, section: 'contact' }
     ];
 
     const destinations: Destination[] = [
@@ -419,7 +522,7 @@ const AddoTours: React.FC = () => {
             id: '1',
             title: t.destinations.pobytove.title,
             description: t.destinations.pobytove.description,
-            features: ['Safari', 'Luxury Lodge', 'Vymyslet'],
+            features: ['Safari', 'Luxury Lodge', 'Beach Resort'],
             price: t.destinations.pobytove.price,
             duration: t.destinations.pobytove.duration,
             gradient: 'from-green-700 to-green-900',
@@ -439,7 +542,7 @@ const AddoTours: React.FC = () => {
             id: '3',
             title: t.destinations.individualni.title,
             description: t.destinations.individualni.description,
-            features: ['Hunting', 'Scenic Route', 'Wildlife'],
+            features: ['Custom Tours', 'Scenic Route', 'Wildlife'],
             price: t.destinations.individualni.price,
             duration: t.destinations.individualni.duration,
             gradient: 'from-stone-600 to-stone-800',
@@ -447,13 +550,13 @@ const AddoTours: React.FC = () => {
         }
     ];
 
-    const destinationImages = {
+    const destinationImages: Record<string, string[]> = {
         '1': ['klubovna.png', 'pobytbeach.jpg', 'beach.jpg'],
         '2': ['wprogrammain.jpg', 'wprogrambridge.jpg', 'wprogramrides.jpg'],
         '3': ['indivimain.jpg', 'indiviwedding.jpg', 'indivigolf.jpg']
     };
 
-    const [destinationImageIndexes, setDestinationImageIndexes] = useState<{[key: string]: number}>({
+    const [destinationImageIndexes, setDestinationImageIndexes] = useState<Record<string, number>>({
         '1': 0, '2': 0, '3': 0
     });
 
@@ -469,7 +572,7 @@ const AddoTours: React.FC = () => {
     }, []);
 
     // Animované statistiky s číselnými hodnotami
-    const stats = [
+    const stats: Stat[] = [
         { number: 500, suffix: '+', label: t.hero.stats.clients },
         { number: 14, suffix: '', label: t.hero.stats.experience },
         { number: 98, suffix: '%', label: t.hero.stats.satisfaction }
@@ -478,14 +581,23 @@ const AddoTours: React.FC = () => {
     return (
         <div className="min-h-screen bg-stone-50 font-sans">
             {/* Navigation */}
-            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-                isScrolled ? 'bg-stone-50/95 backdrop-blur-md shadow-lg' : 'bg-green-800'
-            }`}>
+            <nav
+                className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+                    isScrolled ? 'bg-stone-50/95 backdrop-blur-md shadow-lg' : ''
+                }`}
+                style={!isScrolled ? { backgroundColor: '#c4b7a5' } : {}}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
                             <div className="w-16 h-16 overflow-hidden">
-                                <img src="addotourslogo.png" alt="AddoTours logo" className="w-full h-full object-cover" />
+                                <Image
+                                    src="/addotourslogo.png"
+                                    alt="AddoTours logo"
+                                    width={64}
+                                    height={64}
+                                    className="w-full h-full object-cover"
+                                />
                             </div>
                         </div>
 
@@ -495,7 +607,7 @@ const AddoTours: React.FC = () => {
                                     key={item.id}
                                     onClick={() => handleNavigation(item.section)}
                                     className={`font-semibold transition-colors tracking-wide ${
-                                        isScrolled ? 'text-stone-700 hover:text-green-700' : 'text-white hover:text-amber-200'
+                                        isScrolled ? 'text-stone-700 hover:text-green-700' : 'text-black hover:text-amber-200'
                                     }`}
                                 >
                                     {item.label}
@@ -511,7 +623,7 @@ const AddoTours: React.FC = () => {
                                     className={`flex items-center space-x-2 px-3 py-1 rounded-lg transition-colors ${
                                         isScrolled
                                             ? 'bg-stone-200 text-stone-700 hover:bg-stone-300'
-                                            : 'bg-white/20 text-white hover:bg-white/30'
+                                            : 'bg-stone-500 text-white hover:bg-white/30'
                                     }`}
                                 >
                                     <Globe size={16} />
@@ -532,9 +644,13 @@ const AddoTours: React.FC = () => {
 
                 {/* Mobile menu */}
                 {isMenuOpen && (
-                    <div className={`md:hidden border-t ${
-                        isScrolled ? 'bg-stone-50/95 backdrop-blur-md' : 'bg-green-800'
-                    }`}>
+                    <div
+                        className={`md:hidden border-t ${
+                            isScrolled ? 'bg-stone-50/95 backdrop-blur-md' : ''
+                        }`}
+                        style={!isScrolled ? { backgroundColor: '#c4b7a5', color: 'black' } : {}}
+                    >
+
                         <div className="px-2 pt-2 pb-3 space-y-1">
                             {navItems.map((item) => (
                                 <button
@@ -557,20 +673,22 @@ const AddoTours: React.FC = () => {
                 id="home"
                 className="pt-16 relative min-h-screen flex items-center overflow-hidden"
             >
-                {/* Fade animace pro pozadí */}
+                {/* Video pozadí */}
                 <div className="absolute inset-0">
-                    {backgroundImages.map((image, index) => (
-                        <div
-                            key={index}
-                            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out ${
-                                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                            }`}
-                            style={{
-                                backgroundImage: `linear-gradient(rgba(45, 45, 45, 0.6), rgba(45, 45, 45, 0.4)), url('${image}')`
-                            }}
-                        />
-                    ))}
+                    <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                    >
+                        <source src="africabgvid.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    {/* Overlay pro lepší čitelnost textu */}
+                    <div className="absolute inset-0 bg-black/40"></div>
                 </div>
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div>
@@ -626,26 +744,6 @@ const AddoTours: React.FC = () => {
                                 </button>
                             </div>
                         </div>
-
-                        <div className="relative lg:block hidden">
-                            <div className="w-full h-96 bg-gradient-to-br from-green-700/20 to-amber-600/20 rounded-2xl backdrop-blur-sm border border-white/10 flex items-center justify-center text-white text-8xl shadow-2xl">
-                                🌍
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Image indicators */}
-                    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                        {backgroundImages.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setCurrentImageIndex(index)}
-                                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                                    index === currentImageIndex ? 'bg-amber-400' : 'bg-white/50 hover:bg-white/70'
-                                }`}
-                                aria-label={`Přejít na obrázek ${index + 1}`}
-                            />
-                        ))}
                     </div>
                 </div>
             </section>
@@ -655,13 +753,12 @@ const AddoTours: React.FC = () => {
                 id="destinations"
                 className="py-20 relative"
                 style={{
-                    backgroundImage: `url('background-main2.png')`, // Váš obrázek zde
+                    backgroundImage: `url('background-main2.png')`,
                     backgroundRepeat: 'repeat',
-                    backgroundSize: '400px 400px', // Upravte podle velikosti vzoru
-                    backgroundAttachment: 'fixed' // Paralax efekt (volitelné)
+                    backgroundSize: '400px 400px',
+                    backgroundAttachment: 'fixed'
                 }}
             >
-                {/* Překryvná vrstva pro lepší čitelnost */}
                 <div className="absolute inset-0 bg-stone-50/85"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -681,17 +778,31 @@ const AddoTours: React.FC = () => {
                                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 border border-stone-200 group hover:scale-105 cursor-pointer relative"
                             >
                                 <div className="h-64 relative overflow-hidden">
-                                    <div
-                                        className="w-full h-full bg-cover bg-center transition-all duration-1000 ease-in-out"
-                                        style={{
-                                            backgroundImage: `url('${destinationImages[destination.id as keyof typeof destinationImages][destinationImageIndexes[destination.id]]}')`
-                                        }}
-                                    >
-                                        <div className="absolute inset-0 bg-black/20"></div>
-                                    </div>
+                                    {/* Stack všech obrázků s fade animací */}
+                                    {destinationImages[destination.id].map((imageSrc, imgIndex) => (
+                                        <div
+                                            key={imgIndex}
+                                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                                                imgIndex === destinationImageIndexes[destination.id]
+                                                    ? 'opacity-100'
+                                                    : 'opacity-0'
+                                            }`}
+                                        >
+                                            <Image
+                                                src={`/${imageSrc}`}
+                                                alt={`${destination.title} ${imgIndex + 1}`}
+                                                fill
+                                                className="object-cover"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                priority={imgIndex === 0} // Priorita pro první obrázek
+                                            />
+                                        </div>
+                                    ))}
 
-                                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                                        {destinationImages[destination.id as keyof typeof destinationImages].map((_, index) => (
+                                    <div className="absolute inset-0 bg-black/20"></div>
+
+                                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1 z-10">
+                                        {destinationImages[destination.id].map((_, index) => (
                                             <div
                                                 key={index}
                                                 className={`w-2 h-2 rounded-full transition-colors duration-300 ${
@@ -730,7 +841,7 @@ const AddoTours: React.FC = () => {
                                     <div className="absolute bottom-0 left-0 right-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
                                         <button
                                             onClick={() => {
-                                                if (destination.id === '1') window.location.href = '/pobytove-zajezdy';
+                                                if (destination.id === '1') window.location.href = '/kvetinova-cesta';
                                                 else if (destination.id === '2') window.location.href = '/zajezdy-s-programem';
                                                 else if (destination.id === '3') window.location.href = '/individualni-zajezdy';
                                             }}
@@ -738,6 +849,78 @@ const AddoTours: React.FC = () => {
                                         >
                                             {t.destinations.learnMore}
                                         </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ Section */}
+            <section
+                id="faq"
+                className="py-20 relative"
+                style={{
+                    backgroundImage: `url('background-main2.png')`,
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '400px 400px',
+                    backgroundAttachment: 'fixed'
+                }}
+            >
+                <div className="absolute inset-0 bg-stone-50/85"></div>
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold text-black mb-4">
+                            {t.faq.title}
+                        </h2>
+                        <p className="text-xl text-stone-600 max-w-3xl mx-auto">
+                            {t.faq.subtitle}
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {Object.entries(t.faq.questions).map(([key, faq]) => (
+                            <div
+                                key={key}
+                                className="bg-white rounded-lg border border-stone-200 overflow-hidden hover:shadow-md transition-shadow duration-300 cursor-pointer"
+                                onClick={() => toggleFAQ(key)}
+                            >
+                                <div className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-stone-50 transition-colors duration-200">
+                                    <h3 className="text-lg font-semibold text-black pr-4">
+                                        {faq.question}
+                                    </h3>
+                                    <div
+                                        className={`transform transition-transform duration-200 ${
+                                            expandedFAQ === key ? 'rotate-180' : ''
+                                        }`}
+                                    >
+                                        <svg
+                                            className="w-5 h-5 text-black"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                        expandedFAQ === key
+                                            ? 'max-h-96 opacity-100'
+                                            : 'max-h-0 opacity-0'
+                                    }`}
+                                >
+                                    <div className="px-6 pb-4">
+                                        <p className="text-black leading-relaxed">
+                                            {faq.answer}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -804,7 +987,7 @@ const AddoTours: React.FC = () => {
                             >
                                 {/* FormSubmit skryté pole pro konfiguraci */}
                                 <input type="hidden" name="_subject" value="Nová poptávka z webu AddoTours" />
-                                <input type="hidden" name="_next" value="/dekujeme" />
+                                <input type="hidden" name="_next" value="https://adotours.vercel.app/dekujeme" />
                                 <input type="hidden" name="_captcha" value="false" />
                                 <input type="hidden" name="_template" value="table" />
 
@@ -819,7 +1002,7 @@ const AddoTours: React.FC = () => {
                                         value={formData.name}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
                                     />
                                 </div>
 
@@ -834,7 +1017,8 @@ const AddoTours: React.FC = () => {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
+                                        placeholder={language === 'cs' ? 'Zadejte váš email' : 'Enter your email'}
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
                                     />
                                 </div>
 
@@ -847,12 +1031,12 @@ const AddoTours: React.FC = () => {
                                         name="destination"
                                         value={formData.destination}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
                                     >
                                         <option value="">{t.contact.form.selectDestination}</option>
                                         <option value="pobytove">{t.destinations.pobytove.title}</option>
-                                        <option value="individualni">{t.destinations.individualni.title}</option>
                                         <option value="program">{t.destinations.program.title}</option>
+                                        <option value="individualni">{t.destinations.individualni.title}</option>
                                     </select>
                                 </div>
 
@@ -871,7 +1055,7 @@ const AddoTours: React.FC = () => {
                                         max="50"
                                         required
                                         placeholder={language === 'cs' ? 'Zadejte počet osob' : 'Enter number of people'}
-                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
                                     />
                                 </div>
 
@@ -889,10 +1073,10 @@ const AddoTours: React.FC = () => {
                                                 value={formData.tripDateFrom}
                                                 readOnly
                                                 placeholder={language === 'cs' ? 'Vyberte datum' : 'Select date'}
-                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer"
+                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer text-stone-700"
                                                 onClick={() => openCalendar('from')}
                                             />
-                                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400">
+                                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400 ">
                                                 📅
                                             </div>
                                         </div>
@@ -910,7 +1094,7 @@ const AddoTours: React.FC = () => {
                                                 value={formData.tripDateTo}
                                                 readOnly
                                                 placeholder={language === 'cs' ? 'Vyberte datum' : 'Select date'}
-                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer"
+                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer text-stone-700"
                                                 onClick={() => openCalendar('to')}
                                             />
                                             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400">
@@ -930,7 +1114,7 @@ const AddoTours: React.FC = () => {
                                         rows={4}
                                         value={formData.message}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
                                         placeholder={t.contact.form.placeholder}
                                     />
                                 </div>
@@ -970,7 +1154,7 @@ const AddoTours: React.FC = () => {
                             {/* Kalendář overlay */}
                             {showCalendar && (
                                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4">
+                                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 text-black">
                                         <div className="flex items-center justify-between mb-4">
                                             <button
                                                 type="button"
@@ -980,7 +1164,7 @@ const AddoTours: React.FC = () => {
                                                 ←
                                             </button>
                                             <h3 className="text-lg font-semibold">
-                                                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                                                {monthNames[language][currentMonth.getMonth()]} {currentMonth.getFullYear()}
                                             </h3>
                                             <button
                                                 type="button"
@@ -992,7 +1176,7 @@ const AddoTours: React.FC = () => {
                                         </div>
 
                                         <div className="grid grid-cols-7 gap-1 mb-2">
-                                            {dayNames.map(day => (
+                                            {dayNames[language].map(day => (
                                                 <div key={day} className="p-2 text-center text-sm font-medium text-stone-600">
                                                     {day}
                                                 </div>
@@ -1025,9 +1209,11 @@ const AddoTours: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div className="flex items-center justify-center mb-4">
                         <div className="w-16 h-16 overflow-hidden">
-                            <img
-                                src="addotourslogo.png"
+                            <Image
+                                src="/addotourslogo.png"
                                 alt="AddoTours logo"
+                                width={64}
+                                height={64}
                                 className="w-full h-full object-cover"
                             />
                         </div>
