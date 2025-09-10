@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Phone, Mail, Globe } from 'lucide-react';
 import Image from 'next/image';
+import Link from "next/link";
 
 // Komponenta pro animované číslo
 interface AnimatedNumberProps {
@@ -91,7 +92,7 @@ const translations = {
             pobytove: 'KVĚTINOVÁ CESTA A SAFARI',
             individualni: 'MOŘE A SAFARI',
             program: 'KAPSKÉ MĚSTO A OKOLÍ',
-            faq: 'ČASTÉ OTÁZKY',
+            ubytovani: 'UBYTOVÁNÍ',
             kontakt: 'KONTAKT'
         },
         hero: {
@@ -113,20 +114,20 @@ const translations = {
             pobytove: {
                 title: 'Květinová cesta a safari',
                 description: 'Zajistíme pro Vás v Jihoafrické republice exkluzivní pobyty na farmách v blízkosti měst Kimberley nebo Port Elizabeth s autentickou atmosférou africké přírody, v resortu Marina Sands s rekreačními domky na břehu Indického oceánu, nebo v luxusních apartmánech v Kapském městě s výhledem na oceán.',
-                price: 'Od 65 000 Kč',
-                duration: '7 dní / 6 nocí'
+                price: 'Od 49 900 Kč',
+                duration: '14 dní / 11 nocí'
             },
             program: {
                 title: 'Kapské město a okolí',
                 description: 'Připravili jsme pro Vás pestrý 14denní zájezd kombinující nejkrásnější město JAR Cape Town s jeho pravou atmosférou přístavního města, autentické safari v národních parcích i na soukromých farmách Fijnbosch a Mayabana, plus relaxaci na břehu Indického oceánu pro dokonalé africké dobrodružství.',
-                price: 'Od 55 000 Kč',
-                duration: '6 dní / 5 nocí'
+                price: 'Od 49 900 Kč',
+                duration: '10 dní / 7 nocí'
             },
             individualni: {
                 title: 'Moře a safari',
                 description: 'Rádi vám dále sestavíme individuální zájezd podle vašich přání – od pracovních teambuildinových cest s konferenčním servisem a svateb včetně hostiny, přes forfaitové a golfové zájezdy, až po surfařské zájezdy s možností výuky, cesty za vínem a vinařstvím nebo safari dle vašich představ.',
-                price: 'Od 48 000 Kč',
-                duration: '8 dní / 7 nocí'
+                price: 'Od 29 000 Kč',
+                duration: '10 dní / 7 nocí'
             }
         },
         faq: {
@@ -143,15 +144,15 @@ const translations = {
                 },
                 ockovani: {
                     question: 'Jsou nutná nějaká očkování?',
-                    answer: 'Pro Jihoafrickou republiku nejsou povinná žádná speciální očkování. Doporučujeme však konzultaci s lékařem nebo cestovní klinikou nejpozději 6 týdnů před odjezdem. V případě návštěvy národních parků v malarické oblasti doporučujeme profylaxi proti malárii.'
+                    answer: 'Pro Jihoafrickou republiku nejsou povinná žádná speciální očkování.'
                 },
                 bezpecnost: {
                     question: 'Je Jihoafrická republika bezpečná?',
-                    answer: 'Při dodržování základních bezpečnostních pravidel a cestování s námi je JAR bezpečnou destinací. Všechny naše programy jsou navrženy s ohledem na bezpečnost. Poskytujeme podrobné informace o bezpečnostním chování a naši průvodci znají místní podmínky. Vyhýbáme se rizikovým oblastem a aktivitám.'
+                    answer: 'Při dodržování základních bezpečnostních pravidel a cestování s námi je JAR bezpečnou destinací. Všechny naše programy jsou navrženy s ohledem na bezpečnost. Poskytujeme podrobné informace o bezpečnostním chování a naši průvodci znají místní podmínky.'
                 },
                 ubytovani: {
                     question: 'Jaké je ubytování během zájezdu?',
-                    answer: 'Ubytování vybíráme pečlivě podle kategorie zájezdu. Nabízíme od luxusních lodge až po útulné farmy s autentickou atmosférou. Všechna ubytování mají standardní vybavení, často s bazénem a dalšími službami. V případě potřeby můžeme zajistit jednotlivé pokoje za příplatek.'
+                    answer: 'Ubytování vybíráme pečlivě podle kategorie zájezdu. Nabízíme od luxusních lodge až po útulné farmy s autentickou atmosférou. Všechna ubytování mají standardní vybavení, často s bazénem a dalšími službami.'
                 },
                 narocnost: {
                     question: 'Jaká je náročnost zájezdů a věková kategorie?',
@@ -159,11 +160,11 @@ const translations = {
                 },
                 kdo: {
                     question: 'Kdo s vámi pojede a kdo vás bude provázet?',
-                    answer: 'Skupiny cestují s českým průvodcem, který má více než 10 let zkušeností s Jižní Afrikou a hovoří anglicky i místními jazyky. V destinaci vás doprovodí také místní průvodci s bohatými znalostmi přírody a kultury. Skupiny jsou obvykle 8-16 osob, což zaručuje osobní přístup.'
+                    answer: 'Skupiny cestují s profesionálním průvodcem, který má více než 10 let zkušeností s Jižní Afrikou a hovoří anglicky i místními jazyky.'
                 },
                 viza: {
                     question: 'Potřebuji vízum do Jihoafrické republiky?',
-                    answer: 'Občané ČR nepotřebují pro turistické pobyty do 90 dnů vízum. Stačí platný pas s platností minimálně 30 dnů po skončení pobytu a alespoň 2 volnými stránkami pro razítka. Při vstupu dostanete turistické razítko. Doporučujeme mít s sebou potvrzení o zpáteční letenče a ubytování.'
+                    answer: 'Občané ČR nepotřebují pro turistické pobyty do 90 dnů vízum. Stačí platný pas s platností minimálně 30 dnů po skončení pobytu a alespoň 2 volnými stránkami pro razítka.'
                 }
             }
         },
@@ -187,7 +188,11 @@ const translations = {
             }
         },
         footer: {
-            description: 'Profesionální zájezdy do Jihoafrické republiky od roku 2008',
+            description: 'Profesionální zájezdy do Jihoafrické republiky od roku 2008. Vytváříme nezapomenutelné zážitky na míru.',
+            quickContact: 'Rychlý kontakt',
+            quickLinks: 'Rychlé odkazy',
+            phone: 'Telefon',
+            email: 'Email',
             copyright: '© 2024 AddoTours. Všechna práva vyhrazena.'
         }
     },
@@ -196,7 +201,7 @@ const translations = {
             pobytove: 'FLOWER ROUTE & SAFARI',
             individualni: 'SEA & SAFARI',
             program: 'CAPE TOWN & SURROUNDINGS',
-            faq: 'FAQ',
+            ubytovani: 'ACCOMMODATION',
             kontakt: 'CONTACT'
         },
         hero: {
@@ -218,20 +223,20 @@ const translations = {
             pobytove: {
                 title: 'Flower Route & Safari',
                 description: 'We will arrange exclusive stays on farms near Kimberley or Port Elizabeth with authentic African nature atmosphere.',
-                price: 'From 65,000 CZK',
-                duration: '7 days / 6 nights'
+                price: 'From 2,000 €',
+                duration: '14 days / 11 nights'
             },
             program: {
                 title: 'Cape Town & Surroundings',
                 description: 'We have prepared a varied 14-day tour combining the most beautiful city of SA, Cape Town, with its true port city atmosphere.',
-                price: 'From 55,000 CZK',
-                duration: '6 days / 5 nights'
+                price: 'From 2,000 €',
+                duration: '10 days / 7 nights'
             },
             individualni: {
                 title: 'Sea & Safari',
                 description: 'We will gladly create an individual tour according to your wishes - from corporate team building trips to surfing tours.',
-                price: 'From 48,000 CZK',
-                duration: '8 days / 7 nights'
+                price: 'From 1,160 €',
+                duration: '10 days / 7 nights'
             }
         },
         faq: {
@@ -292,7 +297,11 @@ const translations = {
             }
         },
         footer: {
-            description: 'Professional trips to South Africa since 2008',
+            description: 'Professional trips to South Africa since 2008. Creating unforgettable custom experiences.',
+            quickContact: 'Quick Contact',
+            quickLinks: 'Quick Links',
+            phone: 'Phone',
+            email: 'Email',
             copyright: '© 2024 AddoTours. All rights reserved.'
         }
     }
@@ -316,8 +325,8 @@ interface FormData {
     destination: string;
     message: string;
     numberOfPeople: string;
-    tripDateFrom: string;
-    tripDateTo: string;
+    tripTerm: string; // změněno z tripDateFrom a tripDateTo
+    discountCode: string; // nové pole
     gdprConsent: boolean;
 }
 
@@ -333,10 +342,8 @@ interface Stat {
     label: string;
 }
 
-type DateType = 'from' | 'to' | '';
-
 const AddoTours: React.FC = () => {
-    const [language, setLanguage] = useState<'cs' | 'en'>('cs');
+    const [language, setLanguage] = useState<'cs' | 'en'>('en');
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [expandedFAQ, setExpandedFAQ] = useState<string>('');
@@ -347,18 +354,33 @@ const AddoTours: React.FC = () => {
         destination: '',
         message: '',
         numberOfPeople: '',
-        tripDateFrom: '',
-        tripDateTo: '',
+        tripTerm: '', // změněno
+        discountCode: '', // nové pole
         gdprConsent: false
     });
 
-    // Kalendář state
-    const [showCalendar, setShowCalendar] = useState<boolean>(false);
-    const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-    const [selectedDateType, setSelectedDateType] = useState<DateType>(''); // 'from' nebo 'to'
+    // Nový state pro discount code error
+    const [discountCodeError, setDiscountCodeError] = useState<boolean>(false);
+
+    // Platné slevové kódy
+    const validDiscountCodes = ['afrika10', 'addo5'];
 
     // Hook pro animované statistiky
     const [statsRef, isStatsVisible] = useIntersectionObserver();
+
+    // Inicializace jazyka z localStorage
+    useEffect(() => {
+        const savedLanguage = localStorage.getItem('addotours-language') as 'cs' | 'en' | null;
+        if (savedLanguage && (savedLanguage === 'cs' || savedLanguage === 'en')) {
+            setLanguage(savedLanguage);
+        }
+    }, []);
+
+    // Funkce pro změnu jazyka s persistencí
+    const changeLanguage = (newLanguage: 'cs' | 'en') => {
+        setLanguage(newLanguage);
+        localStorage.setItem('addotours-language', newLanguage);
+    };
 
     // Zkratka pro přístup k překladům
     const t = translations[language];
@@ -387,14 +409,17 @@ const AddoTours: React.FC = () => {
                 case 'kvetinova-cesta':
                     window.location.href = '/kvetinova-cesta';
                     break;
-                case 'individualni-zajezdy':
-                    window.location.href = '/individualni-zajezdy';
+                case 'kapske-mesto-a-okoli':
+                    window.location.href = '/kapske-mesto-a-okoli';
                     break;
-                case 'zajezdy-s-programem':
-                    window.location.href = '/zajezdy-s-programem';
+                case 'more-a-safari':
+                    window.location.href = '/more-a-safari';
                     break;
                 case 'contact':
                     window.location.href = '/kontakt';
+                    break;
+                case 'ubytovani':
+                    window.location.href = '/ubytovani';
                     break;
                 default:
                     scrollToSection(section);
@@ -407,113 +432,51 @@ const AddoTours: React.FC = () => {
         setExpandedFAQ(expandedFAQ === questionKey ? '' : questionKey);
     };
 
+    // Upravená funkce handleInputChange s validací slevového kódu
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
         const { name, value, type } = e.target;
+
         if (type === 'checkbox') {
             const checked = (e.target as HTMLInputElement).checked;
             setFormData(prev => ({ ...prev, [name]: checked }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
+
+        // Validace slevového kódu
+        if (name === 'discountCode') {
+            const trimmedValue = value.trim().toLowerCase();
+
+            // Pokud je pole prázdné, není chyba
+            if (trimmedValue === '') {
+                setDiscountCodeError(false);
+            } else {
+                // Kontrola, zda je kód platný
+                const isValid = validDiscountCodes.includes(trimmedValue);
+                setDiscountCodeError(!isValid);
+            }
+        }
     };
 
-    // Kalendářové funkce
-    const getDaysInMonth = (date: Date): number => {
-        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    };
+    // Funkce pro submit s kontrolou slevového kódu
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        const trimmedDiscountCode = formData.discountCode.trim().toLowerCase();
 
-    const getFirstDayOfMonth = (date: Date): number => {
-        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-        return firstDay === 0 ? 6 : firstDay - 1; // Pondělí = 0
-    };
-
-    const formatDate = (date: Date): string => {
-        return date.toISOString().split('T')[0];
-    };
-
-    const handleDateSelect = (day: number): void => {
-        const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-        const formattedDate = formatDate(selectedDate);
-
-        if (selectedDateType === 'from') {
-            setFormData(prev => ({
-                ...prev,
-                tripDateFrom: formattedDate
-            }));
-        } else if (selectedDateType === 'to') {
-            setFormData(prev => ({
-                ...prev,
-                tripDateTo: formattedDate
-            }));
+        // Pokud je zadán slevový kód, musí být platný
+        if (trimmedDiscountCode !== '' && !validDiscountCodes.includes(trimmedDiscountCode)) {
+            e.preventDefault();
+            setDiscountCodeError(true);
+            return;
         }
 
-        setShowCalendar(false);
-    };
-
-    const openCalendar = (dateType: DateType): void => {
-        setSelectedDateType(dateType);
-        setShowCalendar(true);
-    };
-
-    const navigateMonth = (direction: number): void => {
-        setCurrentMonth(prev => {
-            const newMonth = new Date(prev);
-            newMonth.setMonth(prev.getMonth() + direction);
-            return newMonth;
-        });
-    };
-
-    const renderCalendar = (): React.ReactElement[] => {
-        const daysInMonth = getDaysInMonth(currentMonth);
-        const firstDay = getFirstDayOfMonth(currentMonth);
-        const days: React.ReactElement[] = [];
-
-        // Prázdné buňky pro dny před začátkem měsíce
-        for (let i = 0; i < firstDay; i++) {
-            days.push(<div key={`empty-${i}`} className="p-2"></div>);
-        }
-
-        // Dny měsíce
-        for (let day = 1; day <= daysInMonth; day++) {
-            const isToday = new Date().toDateString() === new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day).toDateString();
-            days.push(
-                <button
-                    key={day}
-                    type="button"
-                    onClick={() => handleDateSelect(day)}
-                    className={`p-2 text-sm rounded hover:bg-green-100 transition-colors ${
-                        isToday ? 'bg-green-200 font-semibold' : 'hover:bg-stone-100'
-                    }`}
-                >
-                    {day}
-                </button>
-            );
-        }
-
-        return days;
-    };
-
-    const monthNames = {
-        cs: [
-            'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
-            'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
-        ],
-        en: [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ]
-    };
-
-    const dayNames = {
-        cs: ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'],
-        en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+        // Formulář se může odeslat normálně
     };
 
     const navItems: NavItem[] = [
         { id: '1', label: t.nav.pobytove, section: 'kvetinova-cesta' },
-        { id: '2', label: t.nav.individualni, section: 'individualni-zajezdy' },
-        { id: '3', label: t.nav.program, section: 'zajezdy-s-programem' },
-        { id: '4', label: t.nav.faq, section: 'faq' },
+        { id: '2', label: t.nav.individualni, section: 'more-a-safari' },
+        { id: '3', label: t.nav.program, section: 'kapske-mesto-a-okoli' },
+        { id: '4', label: t.nav.ubytovani, section: 'ubytovani' },
         { id: '5', label: t.nav.kontakt, section: 'contact' }
     ];
 
@@ -551,9 +514,9 @@ const AddoTours: React.FC = () => {
     ];
 
     const destinationImages: Record<string, string[]> = {
-        '1': ['klubovna.png', 'pobytbeach.jpg', 'beach.jpg'],
-        '2': ['wprogrammain.jpg', 'wprogrambridge.jpg', 'wprogramrides.jpg'],
-        '3': ['indivimain.jpg', 'indiviwedding.jpg', 'indivigolf.jpg']
+        '1': ['winetaste.jpeg', 'bungee.jpg', 'wprogramrides.jpg'],
+        '2': ['helicop.jpg', 'simonpi.jpg', 'hermanus.avif'],
+        '3': ['addopark.jpeg', 'horse-riding.webp', 'monkeypp.webp']
     };
 
     const [destinationImageIndexes, setDestinationImageIndexes] = useState<Record<string, number>>({
@@ -619,7 +582,7 @@ const AddoTours: React.FC = () => {
                         <div className="flex items-center space-x-4">
                             <div className="relative">
                                 <button
-                                    onClick={() => setLanguage(language === 'cs' ? 'en' : 'cs')}
+                                    onClick={() => changeLanguage(language === 'cs' ? 'en' : 'cs')}
                                     className={`flex items-center space-x-2 px-3 py-1 rounded-lg transition-colors ${
                                         isScrolled
                                             ? 'bg-stone-200 text-stone-700 hover:bg-stone-300'
@@ -842,8 +805,8 @@ const AddoTours: React.FC = () => {
                                         <button
                                             onClick={() => {
                                                 if (destination.id === '1') window.location.href = '/kvetinova-cesta';
-                                                else if (destination.id === '2') window.location.href = '/zajezdy-s-programem';
-                                                else if (destination.id === '3') window.location.href = '/individualni-zajezdy';
+                                                else if (destination.id === '2') window.location.href = '/kapske-mesto-a-okoli';
+                                                else if (destination.id === '3') window.location.href = '/more-a-safari';
                                             }}
                                             className="w-full bg-green-700 text-white py-2 font-semibold hover:bg-green-800 transition-colors duration-200"
                                         >
@@ -957,33 +920,60 @@ const AddoTours: React.FC = () => {
                             <h3 className="text-2xl font-semibold text-stone-800 mb-8">
                                 {t.contact.getOffer}
                             </h3>
-                            <div className="space-y-6">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
-                                        <Phone className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <div className="font-semibold text-stone-800">Telefon:</div>
+
+                            <div className="space-y-8">
+                                {/* Telefon sekce */}
+                                <div className="">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="w-14 h-14 bg-custom-beige rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                                            <Phone className="w-7 h-7 text-white" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-lg font-bold text-stone-800 mb-3">Telefon</div>
+                                            <div className="space-y-3">
+                                                <div className="border-l-4 border-custom-beige pl-4">
+                                                    <div className="font-semibold text-stone-800 text-lg">Ing. Petr Havel</div>
+                                                    <div className="text-black font-medium text-lg hover:text-black cursor-pointer transition-colors">
+                                                        +420 602 256 246
+                                                    </div>
+                                                </div>
+                                                <div className="border-l-4 border-custom-beige pl-4">
+                                                    <div className="font-semibold text-black text-lg">Mgr. Karolína Schejbalová</div>
+                                                    <div className="text-black font-medium text-lg hover:text-black cursor-pointer transition-colors">
+                                                        +420 702 000 847
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-green-700 rounded-full flex items-center justify-center">
-                                        <Mail className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <div className="font-semibold text-stone-800">Email:</div>
-                                        <div className="text-stone-600">info@addotours.cz</div>
+
+                                {/* Email sekce */}
+                                <div className="">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="w-14 h-14 bg-custom-beige rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                                            <Mail className="w-7 h-7 text-white" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-lg font-bold text-stone-800 mb-3">Email</div>
+                                            <div className="border-l-4 border-custom-beige pl-4">
+                                                <div className="text-black font-medium text-lg hover:text-black cursor-pointer transition-colors">
+                                                    addotours@email.cz
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Rozšířený formulář */}
+                        {/* Upravený formulář bez kalendáře se slevovým kódem */}
                         <div className="bg-white p-8 rounded-xl shadow-lg border border-stone-200 relative">
                             <form
                                 action="https://formsubmit.co/expertflo51@gmail.com"
                                 method="POST"
                                 className="space-y-6"
+                                onSubmit={handleSubmit}
                             >
                                 {/* FormSubmit skryté pole pro konfiguraci */}
                                 <input type="hidden" name="_subject" value="Nová poptávka z webu AddoTours" />
@@ -1040,7 +1030,7 @@ const AddoTours: React.FC = () => {
                                     </select>
                                 </div>
 
-                                {/* Nové pole: Počet osob */}
+                                {/* Počet osob */}
                                 <div>
                                     <label htmlFor="numberOfPeople" className="block text-sm font-medium text-stone-700 mb-2">
                                         {language === 'cs' ? 'Počet osob *' : 'Number of people *'}
@@ -1059,49 +1049,44 @@ const AddoTours: React.FC = () => {
                                     />
                                 </div>
 
-                                {/* Termín zájezdu od-do s kalendářem */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label htmlFor="tripDateFrom" className="block text-sm font-medium text-stone-700 mb-2">
-                                            {language === 'cs' ? 'Termín zájezdu od' : 'Trip date from'}
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                id="tripDateFrom"
-                                                name="tripDateFrom"
-                                                value={formData.tripDateFrom}
-                                                readOnly
-                                                placeholder={language === 'cs' ? 'Vyberte datum' : 'Select date'}
-                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer text-stone-700"
-                                                onClick={() => openCalendar('from')}
-                                            />
-                                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400 ">
-                                                📅
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Termín zájezdu - dropdown místo kalendáře */}
+                                <div>
+                                    <label htmlFor="tripTerm" className="block text-sm font-medium text-stone-700 mb-2">
+                                        {language === 'cs' ? 'Termín zájezdu' : 'Trip term'}
+                                    </label>
+                                    <select
+                                        id="tripTerm"
+                                        name="tripTerm"
+                                        value={formData.tripTerm}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
+                                    >
+                                        <option value="">{language === 'cs' ? 'Vyberte termín' : 'Select term'}</option>
+                                        <option value="jaro-2025">{language === 'cs' ? 'Jaro 2025 (březen - květen)' : 'Spring 2025 (March - May)'}</option>
+                                        <option value="leto-2025">{language === 'cs' ? 'Léto 2025 (červen - srpen)' : 'Summer 2025 (June - August)'}</option>
+                                        <option value="podzim-2025">{language === 'cs' ? 'Podzim 2025 (září - listopad)' : 'Autumn 2025 (September - November)'}</option>
+                                    </select>
+                                </div>
 
-                                    <div>
-                                        <label htmlFor="tripDateTo" className="block text-sm font-medium text-stone-700 mb-2">
-                                            {language === 'cs' ? 'Termín zájezdu do' : 'Trip date to'}
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                id="tripDateTo"
-                                                name="tripDateTo"
-                                                value={formData.tripDateTo}
-                                                readOnly
-                                                placeholder={language === 'cs' ? 'Vyberte datum' : 'Select date'}
-                                                className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent cursor-pointer text-stone-700"
-                                                onClick={() => openCalendar('to')}
-                                            />
-                                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-stone-400">
-                                                📅
-                                            </div>
-                                        </div>
-                                    </div>
+                                {/* Slevový kód */}
+                                <div>
+                                    <label htmlFor="discountCode" className="block text-sm font-medium text-stone-700 mb-2">
+                                        {language === 'cs' ? 'Slevový kód (nepovinné)' : 'Discount code (optional)'}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="discountCode"
+                                        name="discountCode"
+                                        value={formData.discountCode}
+                                        onChange={handleInputChange}
+                                        placeholder={language === 'cs' ? 'Zadejte slevový kód' : 'Enter discount code'}
+                                        className="w-full px-4 py-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent text-stone-700"
+                                    />
+                                    {discountCodeError && (
+                                        <p className="mt-2 text-sm text-red-600">
+                                            {language === 'cs' ? 'Slevový kód neexistuje' : 'Discount code does not exist'}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>
@@ -1140,9 +1125,9 @@ const AddoTours: React.FC = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={!formData.gdprConsent}
+                                    disabled={!formData.gdprConsent || discountCodeError}
                                     className={`w-full px-8 py-3 rounded-lg font-semibold transition-colors ${
-                                        formData.gdprConsent
+                                        formData.gdprConsent && !discountCodeError
                                             ? 'bg-green-700 text-white hover:bg-green-800'
                                             : 'bg-stone-300 text-stone-500 cursor-not-allowed'
                                     }`}
@@ -1150,86 +1135,90 @@ const AddoTours: React.FC = () => {
                                     {t.contact.form.submit}
                                 </button>
                             </form>
-
-                            {/* Kalendář overlay */}
-                            {showCalendar && (
-                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 text-black">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => navigateMonth(-1)}
-                                                className="p-2 hover:bg-stone-100 rounded"
-                                            >
-                                                ←
-                                            </button>
-                                            <h3 className="text-lg font-semibold">
-                                                {monthNames[language][currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                                            </h3>
-                                            <button
-                                                type="button"
-                                                onClick={() => navigateMonth(1)}
-                                                className="p-2 hover:bg-stone-100 rounded"
-                                            >
-                                                →
-                                            </button>
-                                        </div>
-
-                                        <div className="grid grid-cols-7 gap-1 mb-2">
-                                            {dayNames[language].map(day => (
-                                                <div key={day} className="p-2 text-center text-sm font-medium text-stone-600">
-                                                    {day}
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="grid grid-cols-7 gap-1">
-                                            {renderCalendar()}
-                                        </div>
-
-                                        <div className="flex justify-end mt-4 space-x-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowCalendar(false)}
-                                                className="px-4 py-2 text-stone-600 hover:bg-stone-100 rounded"
-                                            >
-                                                {language === 'cs' ? 'Zrušit' : 'Cancel'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="bg-green-800 text-white py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="flex items-center justify-center mb-4">
-                        <div className="w-16 h-16 overflow-hidden">
-                            <Image
-                                src="/addotourslogo.png"
-                                alt="AddoTours logo"
-                                width={64}
-                                height={64}
-                                className="w-full h-full object-cover"
-                            />
+            <footer className="bg-white text-stone-800 py-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid md:grid-cols-3 gap-12">
+                        <div>
+                            <div className="flex items-center space-x-3 mb-6">
+                                <div className="w-12 h-12 rounded-xl overflow-hidden p-2" style={{ backgroundColor: '#c4b7a5' }}>
+                                    <img src="addotourslogo.png" alt="AddoTours" className="w-full h-full object-cover" />
+                                </div>
+                                <span className="text-2xl font-bold text-stone-800">AddoTours</span>
+                            </div>
+                            <p className="text-stone-600 mb-6 leading-relaxed">
+                                {t.footer.description}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl font-semibold mb-6 text-stone-800">{t.footer.quickContact}</h3>
+                            <div className="space-y-4">
+                                <div className="flex items-center space-x-4 group">
+                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}>
+                                        <Phone size={18} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="text-stone-800">+420 602 256 246</div>
+                                        <div className="text-stone-600 text-sm">Ing. Petr Havel</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4 group">
+                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}>
+                                        <Mail size={18} className="text-white" />
+                                    </div>
+                                    <span className="text-stone-800">addotours@email.cz</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl font-semibold mb-6 text-stone-800">{t.footer.quickLinks}</h3>
+                            <ul className="space-y-3">
+                                <li>
+                                    <Link href="/kvetinova-cesta" className="text-stone-600 hover:text-emerald-600 transition-colors flex items-center group">
+                                        <span className="w-2 h-2 rounded-full mr-3 group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}></span>
+                                        {t.nav.pobytove}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/more-a-safari" className="text-stone-600 hover:text-emerald-600 transition-colors flex items-center group">
+                                        <span className="w-2 h-2 rounded-full mr-3 group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}></span>
+                                        {t.nav.individualni}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/kapske-mesto-a-okoli" className="text-stone-600 hover:text-emerald-600 transition-colors flex items-center group">
+                                        <span className="w-2 h-2 rounded-full mr-3 group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}></span>
+                                        {t.nav.program}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/ubytovani" className="text-stone-600 hover:text-emerald-600 transition-colors flex items-center group">
+                                        <span className="w-2 h-2 rounded-full mr-3 group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}></span>
+                                        {t.nav.ubytovani}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/kontakt" className="text-stone-600 hover:text-emerald-600 transition-colors flex items-center group">
+                                        <span className="w-2 h-2 rounded-full mr-3 group-hover:bg-emerald-500 transition-colors" style={{ backgroundColor: '#c4b7a5' }}></span>
+                                        {t.nav.kontakt}
+                                    </Link>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <p className="text-green-100 mb-4">
-                        {language === 'cs'
-                            ? 'Profesionální zájezdy do Jihoafrické republiky od roku 2008'
-                            : 'Professional trips to South Africa since 2008'
-                        }
-                    </p>
-                    <p className="text-stone-300 text-sm">
-                        {language === 'cs'
-                            ? '© 2024 AddoTours. Všechna práva vyhrazena.'
-                            : '© 2024 AddoTours. All rights reserved.'
-                        }
-                    </p>
+
+                    <div className="border-t border-stone-200 mt-12 pt-8 text-center">
+                        <p className="text-stone-500">
+                            {t.footer.copyright}
+                        </p>
+                    </div>
                 </div>
             </footer>
         </div>

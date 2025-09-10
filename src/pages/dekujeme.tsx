@@ -3,26 +3,40 @@ import { CheckCircle, Mail, Phone, ArrowLeft, Home, Calendar, Globe } from 'luci
 
 const Dekujeme: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
-    const [language, setLanguage] = useState<'cs' | 'en'>('cs');
+    const [language, setLanguage] = useState<'cs' | 'en'>('en');
 
     useEffect(() => {
         // Animace načtení
         setTimeout(() => setIsVisible(true), 100);
 
-        // Detekce jazyka z URL parametru
+        // Priorita detekce jazyka:
+        // 1. URL parametr (nejvyšší priorita - přichází z formuláře)
+        // 2. localStorage (uložená preference uživatele)
+        // 3. Browser jazyk (fallback)
+
         const urlParams = new URLSearchParams(window.location.search);
-        const langParam = urlParams.get('lang');
-        if (langParam === 'en') {
-            setLanguage('en');
+        const langParam = urlParams.get('lang') as 'cs' | 'en' | null;
+
+        let detectedLanguage: 'cs' | 'en' = 'cs';
+
+        if (langParam && (langParam === 'cs' || langParam === 'en')) {
+            // URL parametr má nejvyšší prioritu
+            detectedLanguage = langParam;
+            // Uložíme do localStorage pro budoucí použití
+            localStorage.setItem('language', langParam);
+        } else {
+            // Pokud není URL parametr, zkusíme localStorage
+            const savedLanguage = localStorage.getItem('language') as 'cs' | 'en' | null;
+            if (savedLanguage && (savedLanguage === 'cs' || savedLanguage === 'en')) {
+                detectedLanguage = savedLanguage;
+            } else if (navigator.language.startsWith('en')) {
+                // Fallback na browser jazyk
+                detectedLanguage = 'en';
+                localStorage.setItem('language', 'en');
+            }
         }
-        // Nebo detekce z localStorage pokud je uložený
-        else if (localStorage.getItem('language') === 'en') {
-            setLanguage('en');
-        }
-        // Nebo detekce z browser jazyka
-        else if (navigator.language.startsWith('en')) {
-            setLanguage('en');
-        }
+
+        setLanguage(detectedLanguage);
     }, []);
 
     const translations = {
@@ -81,7 +95,9 @@ const Dekujeme: React.FC = () => {
     const t = translations[language];
 
     const goHome = () => {
-        window.location.href = '/';
+        // Při návratu na hlavní stránku zachováme jazykovou preferenci
+        const homeUrl = language === 'en' ? '/?lang=en' : '/';
+        window.location.href = homeUrl;
     };
 
     const goBack = () => {
@@ -91,7 +107,18 @@ const Dekujeme: React.FC = () => {
     const toggleLanguage = () => {
         const newLang = language === 'cs' ? 'en' : 'cs';
         setLanguage(newLang);
+
+        // Uložíme do localStorage
         localStorage.setItem('language', newLang);
+
+        // Aktualizujeme URL parametr pro konzistenci
+        const url = new URL(window.location.href);
+        if (newLang === 'en') {
+            url.searchParams.set('lang', 'en');
+        } else {
+            url.searchParams.delete('lang');
+        }
+        window.history.replaceState({}, '', url.toString());
     };
 
     return (
@@ -100,6 +127,7 @@ const Dekujeme: React.FC = () => {
             <button
                 onClick={toggleLanguage}
                 className="fixed top-4 right-4 z-50 flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg hover:bg-white transition-colors"
+                title={language === 'cs' ? 'Switch to English' : 'Přepnout na češtinu'}
             >
                 <Globe size={16} className="text-emerald-600" />
                 <span className="text-sm font-medium text-gray-700">{language.toUpperCase()}</span>
@@ -207,7 +235,7 @@ const Dekujeme: React.FC = () => {
                                     </div>
                                     <div>
                                         <div className="font-medium text-gray-800">{t.phone}</div>
-                                        <div className="text-gray-600">+420 224 567 890</div>
+                                        <div className="text-gray-600">+420 602 256 246</div>
                                     </div>
                                 </div>
 
@@ -217,7 +245,7 @@ const Dekujeme: React.FC = () => {
                                     </div>
                                     <div>
                                         <div className="font-medium text-gray-800">{t.email}</div>
-                                        <div className="text-gray-600">info@addotours.cz</div>
+                                        <div className="text-gray-600">addotours@email.cz</div>
                                     </div>
                                 </div>
                             </div>
@@ -262,12 +290,6 @@ const Dekujeme: React.FC = () => {
                             {t.tagline}
                         </p>
 
-                        <div className="flex justify-center space-x-2 mt-4 text-xl">
-                            <span>🌍</span>
-                            <span>🦁</span>
-                            <span>🏔️</span>
-                            <span>🌊</span>
-                        </div>
                     </div>
                 </div>
             </div>
